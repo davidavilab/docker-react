@@ -1,0 +1,16 @@
+sudo: required #indica que esto requiere permisos de super usuario
+services:
+    #indicamos a travis que queremos una copia de un contenedor con docker instalado
+    - docker 
+
+before_install:
+    #indicamos a travis que debe construir el contenedor con el archivo dockerfile (-f) para correr los test
+    #adicionalmente debemos darle un tag al contenedor (-t) para poderlo identificar (davidavilab/docker-react)
+    #por convencion se usa un espacio de nombres, el tag podria haber sido mas corto como por ejemplo test-docker-react
+    - docker build -t davidavilab/docker-react -f Dockerfile.dev . 
+
+#en la seccion script, finalmente se dice a travis los comandos que debe ejecutar sobre nuestro contenedor
+#travis esperara por el resultado del comando exit, si por alguna razon, exit es diferente de cero se asume
+#que la prueba o algo fallo para travis
+script:
+    - docker run -e CI=true davidavilab/docker-react npm run test
