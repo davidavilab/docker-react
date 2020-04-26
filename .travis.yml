@@ -14,3 +14,16 @@ before_install:
 #que la prueba o algo fallo para travis
 script:
     - docker run -e CI=true davidavilab/docker-react npm run test
+#en la seccion deploy vamos a definir los pasos necesarios para desplegar la solucion en AWS Elasticbeanstalk
+deploy:
+    provider: elasticbeanstalk #travis CI tiene varios proveedores aqui se especifica el provider
+    region: "us-east-1" #aqui se define la region en la que se creo la app en beanstalk
+    app: "docker-react" #nombre de la aplicacion creada en elasticbeanstalk
+    env: "DockerReact-env" #esto es el nombre del entorno
+    bucket_name: "elasticbeanstalk-us-east-1-223162989603" #nombre del servicio s3 que es un hdd en la nube
+    bucket_path: "docker-react" #el nombre de la carpeta que se creara o tomara una vez que se despliegue la app
+    on:
+        branch: master #aqui se indica que solo lo que cambie en el master branch disparara el trigger
+    access_key_id: $AWS_ACCESS_KEY #es la variable que almanacena el access key del usuario creado en AWS IAM 
+    secret_access_key: $AWS_SECRET_KEY
+        #secure: "$AWS_SECRET_KEY" es la forma antigua
